@@ -1,0 +1,33 @@
+Django
+psycopg2-binary
+django-rest-framework
+django-versatileimagefield
+django-cors-headers
+django-admin-sortable2
+django-filter
+django-ckeditor
+django-jazzmin
+whitenoise
+django-storages
+boto3
+djangorestframework-simplejwt
+# django-oscar
+# django-storages
+# django-cacheops
+# djoser
+# djsingleton
+# rest-framework-generic-relations
+# django-cron
+# opencv-python
+# opencv-python-headless
+# sendgrid
+# channels
+# channels-redis
+# moviepy
+# firebase_admin
+# stripe
+# google-api-python-client
+# google-auth 
+# google-auth-oauthlib
+# google-auth-httplib2
+# requests

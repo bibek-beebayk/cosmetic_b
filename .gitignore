@@ -1,0 +1,12 @@
+*.pyc
+__pycache__
+.idea
+*.log
+*.sqlite3
+blackvilla/settings/env.py
+env/
+media/
+static/
+notes.md
+thumbnails/
+firebase_service_account.dev.json
