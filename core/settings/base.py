@@ -13,14 +13,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'ckeditor',
     'versatileimagefield',
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'tinymce',
 
     'apps.users',
-    'apps.product'
+    'apps.product',
+    'apps.siteconfig',
+    'apps.blog',
 ]
 
 MIDDLEWARE = [

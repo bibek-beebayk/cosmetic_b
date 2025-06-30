@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Brand, Category, Product, ProductImage, ProductProperty
+from .models import Brand, Category, Product, ProductImage, ProductProperty, ProductReview
 
 
 @admin.register(Category)
@@ -40,3 +40,18 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ("name",)
     readonly_fields = ("created_at", "updated_at")
     inlines = [ProductImageInline, ProductPropertyInline]
+
+
+@admin.register(ProductReview)
+class ProductReviewAdmin(admin.ModelAdmin):
+    list_display = ("product", "user", "rating", "created_at")
+    search_fields = ("product__name", "user__username")
+    list_filter = ("rating", "created_at")
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at",)
+
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False

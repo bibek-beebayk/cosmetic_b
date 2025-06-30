@@ -1,4 +1,3 @@
-from ckeditor.fields import RichTextField
 from django.db import models
 from tinymce.models import HTMLField
 
@@ -29,7 +28,7 @@ class Category(models.Model):
 class Brand(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    description = RichTextField(blank=True, null=True)
+    description = HTMLField(blank=True, null=True)
     logo = models.ImageField(upload_to="brand_logos/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -46,7 +45,7 @@ class Brand(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    description = RichTextField(blank=True, null=True)
+    description = HTMLField(blank=True, null=True)
     category = models.ForeignKey(
         Category,
         related_name="products",
@@ -65,6 +64,13 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def rating(self):
+        ratings = self.reviews.values_list('rating', flat=True)
+        if ratings:
+            return sum(ratings) / len(ratings)
+        return 0
 
     class Meta:
         verbose_name = "Product"
@@ -104,3 +110,23 @@ class ProductImage(models.Model):
         verbose_name_plural = "Product Images"
         ordering = ["-is_main", "id"]
         unique_together = ("product", "is_main")
+
+
+class ProductReview(models.Model):
+    product = models.ForeignKey(
+        Product, related_name="reviews", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "users.User", related_name="reviews", on_delete=models.CASCADE
+    )
+    rating = models.PositiveIntegerField()
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.product.name} by {self.user.username}"
+
+    class Meta:
+        verbose_name = "Product Review"
+        verbose_name_plural = "Product Reviews"
+        ordering = ["-created_at"]
