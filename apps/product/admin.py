@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Brand, Category, Product, ProductImage, ProductProperty, ProductReview
+from .models import Brand, Category, Product, ProductImage, ProductProperty, ProductReview, ProductShade, ProductVariant
 
 
 @admin.register(Category)
@@ -31,6 +31,16 @@ class ProductPropertyInline(admin.TabularInline):
     extra = 0
 
 
+class ProductShadeInline(admin.StackedInline):
+    model = ProductShade
+    extra = 0
+
+
+class ProductVariantInline(admin.StackedInline):
+    model = ProductVariant
+    extra = 0
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "category", "brand", "sku", "created_at")
@@ -39,7 +49,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("category", "brand")
     ordering = ("name",)
     readonly_fields = ("created_at", "updated_at")
-    inlines = [ProductImageInline, ProductPropertyInline]
+    inlines = [ProductImageInline, ProductPropertyInline, ProductShadeInline, ProductVariantInline]
 
 
 @admin.register(ProductReview)

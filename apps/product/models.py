@@ -13,6 +13,7 @@ class Category(models.Model):
         null=True,
         blank=True,
     )
+    image = models.ImageField(upload_to="category_images/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -56,6 +57,8 @@ class Product(models.Model):
     brand = models.ForeignKey(
         Brand, related_name="products", on_delete=models.CASCADE, null=True, blank=True
     )
+    ingredients = HTMLField(blank=True, null=True)
+    how_to_use = HTMLField(blank=True, null=True)
     sku = models.CharField(max_length=100, unique=True, verbose_name="SKU")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
@@ -71,11 +74,59 @@ class Product(models.Model):
         if ratings:
             return sum(ratings) / len(ratings)
         return 0
+    
+    @classmethod
+    def get_new_arrivals(cls, limit=4):
+        return cls.objects.order_by("-created_at")[:limit]
+    
+    @classmethod
+    def get_best_sellers(cls, limit=4):
+        # TODO: Implement logic to determine best sellers, e.g., based on sales data
+        return cls.objects.order_by("-stock")[:limit]
 
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"
         ordering = ["-created_at"]
+
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(
+        Product, related_name="variants", on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
+    sku = models.CharField(max_length=100, unique=True, verbose_name="SKU")
+    image = models.ImageField(upload_to="product_variants/", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.product.name}"
+
+    class Meta:
+        verbose_name = "Product Variant"
+        verbose_name_plural = "Product Variants"
+        unique_together = ("product", "name")
+        ordering = ["name"]
+
+
+class ProductShade(models.Model):
+    product = models.ForeignKey(
+        Product, related_name="shades", on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+    hex_code = models.CharField(max_length=7, help_text="Hex color code (e.g., #FFFFFF)")
+    image = models.ImageField(upload_to="product_shades/", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.product.name}"
+    
+
+    class Meta:
+        verbose_name = "Product Shade"
+        verbose_name_plural = "Product Shades"
+        unique_together = ("product", "name")
+        ordering = ["name"]
 
 
 class ProductProperty(models.Model):
@@ -109,7 +160,7 @@ class ProductImage(models.Model):
         verbose_name = "Product Image"
         verbose_name_plural = "Product Images"
         ordering = ["-is_main", "id"]
-        unique_together = ("product", "is_main")
+        # unique_together = ("product", "is_main")
 
 
 class ProductReview(models.Model):

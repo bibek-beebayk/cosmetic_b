@@ -11,3 +11,4 @@ django-storages
 boto3
 djangorestframework-simplejwt
 django-tinymce
+django-solo

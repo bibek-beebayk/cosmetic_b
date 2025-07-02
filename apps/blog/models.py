@@ -7,6 +7,7 @@ class Blog(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     cover_image = models.ImageField(upload_to="blog_covers/", null=True, blank=True)
     content = HTMLField()
+    excerpt = models.CharField(max_length=1000, blank=True, null=True)
     author = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
