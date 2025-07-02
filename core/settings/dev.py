@@ -27,4 +27,29 @@ CORS_ALLOWED_ORIGINS = (
 INSTALLED_APPS += ['django_extensions', 'debug_toolbar']
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "./debug.log",
+        },
+        # "mail_admins": {
+        #     "level": "ERROR",
+        #     "class": "django.utils.log.AdminEmailHandler",
+        #     "include_html": True,
+        # },
+    },
+    "loggers": {
+        "": {  # empty string
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
+
 INTERNAL_IPS = ['127.0.0.1']

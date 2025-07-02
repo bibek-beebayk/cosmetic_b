@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
     #     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
     #     # 'SEARCH_PARAM': 'q',
     "DEFAULT_PAGINATION_CLASS": "libs.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 24,
     #     'DEFAULT_PERMISSION_CLASSES': (
     #         # 'rest_framework.permissions.IsAuthenticated',
     #         'rest_framework.permissions.AllowAny',
