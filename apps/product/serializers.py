@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.cart.models import WishListItem
 from apps.product.models import (
     Category,
     Product,
@@ -51,6 +52,13 @@ class ProductShadeSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     brand = serializers.CharField(source="brand.name", read_only=True)
     image = serializers.SerializerMethodField()
+    is_in_wishlist = serializers.SerializerMethodField()
+
+    def get_is_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return WishListItem.objects.filter(user=user, product=obj).exists()
+        return False
 
     def get_image(self, obj):
         img = obj.images.filter(is_main=True).first()
@@ -61,7 +69,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["name", "price", "image", "slug", "rating", "brand"]
+        fields = ["id", "name", "price", "image", "slug", "rating", "brand", "is_in_wishlist"]
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

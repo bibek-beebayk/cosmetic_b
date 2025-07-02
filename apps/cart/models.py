@@ -20,3 +20,7 @@ class WishListItem(models.Model):
 
     def __str__(self):
         return f"Wishlist item for {self.product.name} by {self.user.username}"
+    
+    class Meta:
+        unique_together = ('user', 'product')
+        ordering = ['-created_at']
