@@ -46,7 +46,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(methods=["get"], detail=False)
     def me(self, request):
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         user = request.user
         if not user.is_authenticated:
             return Response({"detail": "Authentication credentials were not provided."}, status=401)

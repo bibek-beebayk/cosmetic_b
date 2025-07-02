@@ -21,6 +21,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include(router.urls)),
     path("api/v1/home/", siteconfig_api.HomePageView.as_view()),
+    path("api/v1/navitems/", siteconfig_api.NavItemView.as_view()),
     # path("deploy/", order_api.DeployView.as_view())
     path('tinymce/', include('tinymce.urls')),
 ]

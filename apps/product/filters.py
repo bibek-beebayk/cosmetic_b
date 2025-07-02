@@ -1,10 +1,10 @@
-from django_filters import FilterSet, AllValuesFilter, NumberFilter, CharFilter
+from django_filters import AllValuesFilter, CharFilter, FilterSet, NumberFilter
 
 from apps.product.models import Product
 
 
 class ProductFilterSet(FilterSet):
-    category = AllValuesFilter(field_name="category__name")
+    # category = AllValuesFilter(field_name="category__name")
     min_price = NumberFilter(field_name="price", lookup_expr="gte")
     max_price = NumberFilter(field_name="price", lookup_expr="lte")
 
@@ -13,6 +13,16 @@ class ProductFilterSet(FilterSet):
         label="Sort by",
     )
 
+    category = CharFilter(
+        method="filter_by_category",
+        label="Category Filter",
+    )
+
+    def filter_by_category(self, queryset, name, value):
+        if value == "all":
+            return queryset
+        else:
+            return queryset.filter(category__slug__iexact=value)
 
     def sort_queryset(self, queryset, name, value):
         if value == "price_asc":

@@ -1,6 +1,8 @@
 from django.db import models
 from tinymce.models import HTMLField
 
+from apps.siteconfig.models import NavItem
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -19,6 +21,23 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        
+        if not NavItem.objects.filter(title=self.name).exists():
+            navitem = NavItem.objects.create(
+                title=self.name, link=f"/products/?category={self.slug}"
+            )
+
+            if self.parent:
+                navitem.parent = NavItem.objects.get(title=self.parent.name)
+                navitem.save()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        NavItem.objects.filter(title=self.name).delete()
+        super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = "Category"
@@ -67,18 +86,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     @property
     def rating(self):
-        ratings = self.reviews.values_list('rating', flat=True)
+        ratings = self.reviews.values_list("rating", flat=True)
         if ratings:
             return sum(ratings) / len(ratings)
         return 0
-    
+
     @classmethod
     def get_new_arrivals(cls, limit=4):
         return cls.objects.order_by("-created_at")[:limit]
-    
+
     @classmethod
     def get_best_sellers(cls, limit=4):
         # TODO: Implement logic to determine best sellers, e.g., based on sales data
@@ -115,12 +134,13 @@ class ProductShade(models.Model):
         Product, related_name="shades", on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
-    hex_code = models.CharField(max_length=7, help_text="Hex color code (e.g., #FFFFFF)")
+    hex_code = models.CharField(
+        max_length=7, help_text="Hex color code (e.g., #FFFFFF)"
+    )
     image = models.ImageField(upload_to="product_shades/", null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} - {self.product.name}"
-    
 
     class Meta:
         verbose_name = "Product Shade"

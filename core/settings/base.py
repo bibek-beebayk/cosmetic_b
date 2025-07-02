@@ -11,11 +11,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "adminsortable2",
+
     "versatileimagefield",
     "rest_framework",
     "corsheaders",
     "django_filters",
     "tinymce",
+
     "apps.users",
     "apps.product",
     "apps.siteconfig",
@@ -32,6 +35,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "libs.middlewares.APILogMiddleware"
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -100,9 +104,9 @@ REST_FRAMEWORK = {
     #         'rest_framework.permissions.AllowAny',
     #     ),
     #     # 'EXCEPTION_HANDLER': 'libs.drf.exceptions.exception_handler',
-    #     'DEFAULT_AUTHENTICATION_CLASSES': [
-    #         'rest_framework.authentication.TokenAuthentication'
-    #     ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
     #     # 'DEFAULT_THROTTLE_RATES': {
     #     #     'loginAttempts': '12/min',
     #     #     'user': '100/min',

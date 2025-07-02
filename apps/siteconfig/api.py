@@ -8,9 +8,9 @@ from apps.product.serializers import (
     CategorySerializer,
     ProductListSerializer,
 )
-from apps.siteconfig.serializers import BannerSerializer
+from apps.siteconfig.serializers import BannerSerializer, NavItemSerializer
 
-from .models import Banner
+from .models import Banner, NavItem
 
 
 class HomePageView(APIView):
@@ -52,3 +52,11 @@ class HomePageView(APIView):
             "categories": category_data,
         }
         return Response(res, status=200)
+
+
+class NavItemView(APIView):
+
+    def get(self, request):
+        items = NavItem.objects.filter(active=True).order_by("order")
+        serializer = NavItemSerializer(items, many=True)
+        return Response(serializer.data, status=200)
