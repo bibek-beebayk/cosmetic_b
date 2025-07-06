@@ -39,13 +39,13 @@ class ProductPropertySerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
-        fields = ["name", "price", "sku", "stock", "image"]
+        fields = ["id", "name", "price", "sku", "stock", "image"]
 
 
 class ProductShadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductShade
-        fields = ["name", "hex_code", "image"]
+        fields = ["id","name", "hex_code", "image", "sku", "stock"]
         read_only_fields = fields
 
 
@@ -79,10 +79,18 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     properties = ProductPropertySerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     shades = ProductShadeSerializer(many=True, read_only=True)
+    is_in_wishlist = serializers.SerializerMethodField()
+
+    def get_is_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return WishListItem.objects.filter(user=user, product=obj).exists()
+        return False
 
     class Meta:
         model = Product
         fields = [
+            "id",
             "name",
             "slug",
             "description",
@@ -95,5 +103,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "rating",
             "properties",
             "variants",
-            "shades"
+            "shades",
+            "is_in_wishlist"
         ]

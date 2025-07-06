@@ -15,6 +15,7 @@ router.register("product", product_api.ProductViewSet, basename="product")
 router.register("auth", user_api.AuthenticationViewSet, basename="auth")
 router.register("user", user_api.UserViewSet, basename="user")
 router.register("wishlist", cart_api.WishlistViewSet, basename="wishlist")
+router.register("cart", cart_api.CartViewSet, basename="cart")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

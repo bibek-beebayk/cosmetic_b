@@ -137,6 +137,8 @@ class ProductShade(models.Model):
     hex_code = models.CharField(
         max_length=7, help_text="Hex color code (e.g., #FFFFFF)"
     )
+    sku = models.CharField(max_length=100, unique=True, verbose_name ="SKU", blank=True, null=True)
+    stock = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to="product_shades/", null=True, blank=True)
 
     def __str__(self):
