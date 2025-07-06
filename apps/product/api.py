@@ -4,8 +4,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.product.filters import ProductFilterSet
 
-from .models import Product
-from .serializers import ProductDetailSerializer, ProductListSerializer
+from .models import Brand, Product
+from .serializers import BrandSerializer, ProductDetailSerializer, ProductListSerializer
 
 
 class ProductViewSet(ReadOnlyModelViewSet):
@@ -21,9 +21,9 @@ class ProductViewSet(ReadOnlyModelViewSet):
             return ProductDetailSerializer
         return super().get_serializer_class()
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     category_slug = self.request.query_params.get("category", None)
-    #     if category_slug is not None:
-    #         queryset = queryset.filter(category__slug=category_slug)
-    #     return queryset
+
+class BrandViewSet(ReadOnlyModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    lookup_field = "slug"
+    pagination_class = None

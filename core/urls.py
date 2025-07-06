@@ -8,10 +8,12 @@ from apps.siteconfig import api as siteconfig_api
 from apps.product import api as product_api
 from apps.users import api as user_api
 from apps.cart import api as cart_api
+from apps.order import api as order_api
 
 router = DefaultRouter()
 
 router.register("product", product_api.ProductViewSet, basename="product")
+router.register("brand", product_api.BrandViewSet, basename="brand")
 router.register("auth", user_api.AuthenticationViewSet, basename="auth")
 router.register("user", user_api.UserViewSet, basename="user")
 router.register("wishlist", cart_api.WishlistViewSet, basename="wishlist")
@@ -22,6 +24,7 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
     path("api/v1/home/", siteconfig_api.HomePageView.as_view()),
     path("api/v1/navitems/", siteconfig_api.NavItemView.as_view()),
+    path("api/v1/checkout/", order_api.CheckoutView.as_view()),
     path('tinymce/', include('tinymce.urls')),
 ]
 

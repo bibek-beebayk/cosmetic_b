@@ -1,4 +1,5 @@
 from django_filters import AllValuesFilter, CharFilter, FilterSet, NumberFilter
+import django_filters
 
 from apps.product.models import Product
 
@@ -18,11 +19,19 @@ class ProductFilterSet(FilterSet):
         label="Category Filter",
     )
 
+    brand = django_filters.CharFilter(
+        method="filter_by_brand",
+        label="Brand Filter",
+    )
+
     def filter_by_category(self, queryset, name, value):
         if value == "all":
             return queryset
         else:
             return queryset.filter(category__slug__iexact=value)
+        
+    def filter_by_brand(self, queryset, name, value):
+        return queryset.filter(brand__slug__iexact=value)
 
     def sort_queryset(self, queryset, name, value):
         if value == "price_asc":
@@ -42,4 +51,5 @@ class ProductFilterSet(FilterSet):
             "min_price",
             "max_price",
             "sort",
+            "brand"
         ]
