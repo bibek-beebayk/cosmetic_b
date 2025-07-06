@@ -7,4 +7,4 @@ fi
 python manage.py migrate -v 0
 python manage.py collectstatic  --noinput
 
-gunicorn blackvilla.wsgi:application --bind 0.0.0.0:$PORT
+gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
