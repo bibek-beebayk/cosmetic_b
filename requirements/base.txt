@@ -12,4 +12,3 @@ boto3
 djangorestframework-simplejwt
 django-tinymce
 django-solo
-django-extensions

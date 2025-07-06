@@ -3,7 +3,7 @@ __pycache__
 .idea
 *.log
 *.sqlite3
-blackvilla/settings/env.py
+core/settings/env.py
 env/
 media/
 static/
