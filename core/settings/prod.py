@@ -1,14 +1,11 @@
 import os
 
-from .base import REST_FRAMEWORK, BASE_DIR, MIDDLEWARE, INSTALLED_APPS
-
+from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE, REST_FRAMEWORK
 
 SECRET_KEY = "django-insecure-e97*el)u=a(#6!r%)6pqxys(myd(ypmr14gd#g+5^ib(urrb!r"
 
 ALLOWED_HOSTS = [
-    "blackvillabe.bibek0001.com.np",
-    "be.blackvilla.shop",
-    "blackvilla-be-production.up.railway.app",
+    "cosmeticb-production.up.railway.app"
 ]
 
 MIDDLEWARE += [
@@ -31,18 +28,11 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = (
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-    "https://blackvillabe.bibek0001.com.np",
-    "https://blackvilla.shop",
-    "https://blackvilla-fe.pages.dev"
+    "https://cosmeticb-production.up.railway.app"
 )
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://blackvillabe.bibek0001.com.np",
-    "https://be.blackvilla.shop",
-    "https://blackvilla-be-production.up.railway.app",
-    "https://blackvilla.shop",
-    "https://blackvilla-fe.pages.dev"
+    "https://cosmeticb-production.up.railway.app"
 ]
 
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)
