@@ -28,11 +28,13 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = (
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://cosmeticb-production.up.railway.app"
+    "https://cosmeticb-production.up.railway.app",
+    "https://beautycorner01.netlify.app"
 )
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://cosmeticb-production.up.railway.app"
+    "https://cosmeticb-production.up.railway.app",
+    "https://beautycorner01.netlify.app"
 ]
 
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRenderer",)
