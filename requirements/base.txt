@@ -1,4 +1,4 @@
-Django
+Django == 5.0
 psycopg2-binary
 django-rest-framework
 django-versatileimagefield
@@ -8,7 +8,7 @@ django-filter
 django-jazzmin
 whitenoise
 django-storages
-boto3
+boto3==1.35.84
 djangorestframework-simplejwt
 django-tinymce
 django-solo
