@@ -61,7 +61,9 @@ class ProductReviewAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at",)
 
     def has_add_permission(self, request):
-        return False
+        # return False
+        return True
     
     def has_change_permission(self, request, obj=None):
-        return False
+        # return False
+        return True
