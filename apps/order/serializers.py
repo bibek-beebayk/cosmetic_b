@@ -25,6 +25,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return None
 
     def get_product_data(self, obj):
+        # import ipdb; ipdb.set_trace()
         return ProductListSerializer(
             obj.product, context={"request": self.context.get("request")}
         ).data

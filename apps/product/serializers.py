@@ -65,7 +65,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         img = obj.images.filter(is_main=True).first()
         if img:
-            img_url = self.context.get("request").build_absolute_uri(img.image.url)
+            img_url = self.context["request"].build_absolute_uri(img.image.url)
             return img_url
         return None
 
