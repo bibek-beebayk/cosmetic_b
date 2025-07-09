@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
+
 def get_tokens(user):
     refresh = RefreshToken.for_user(user)
     return {"refresh": str(refresh), "access": str(refresh.access_token)}
@@ -19,7 +20,7 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password", None)
         if not email or not password:
             raise serializers.ValidationError("Username and password are required.")
-        
+
         user = User.objects.filter(email=email).first()
         if not user:
             raise serializers.ValidationError("User with this email does not exist.")
@@ -35,9 +36,14 @@ class LoginSerializer(serializers.Serializer):
     def create(self, validated_data):
         # This method is not used in this context but is required by the serializer
         return validated_data
-    
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "email")
+        fields = ("id", "email", "phone", "full_name")
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
