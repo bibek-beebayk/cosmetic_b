@@ -1,3 +1,4 @@
+from django.db.models import F, Sum
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -111,9 +112,6 @@ class CartViewSet(viewsets.ModelViewSet):
             }
         )
         serializer.is_valid(raise_exception=True)
-        # import ipdb
-
-        # ipdb.set_trace()
         self.perform_create(serializer)
         return Response({"message": "Added to cart"}, status=201)
 
@@ -142,3 +140,27 @@ class CartViewSet(viewsets.ModelViewSet):
         cart_item.quantity = quantity
         cart_item.save()
         return Response({"message": "Quantity updated"}, status=200)
+
+    @action(detail=False, url_path="get-numbers")
+    def get_numbers(self, request, *arks, **kwargs):
+        user = request.user
+        cart_items = CartItem.objects.filter(user=user)
+        total_items = cart_items.count()
+        subtotal = cart_items.aggregate(
+            amount=Sum(F("quantity") * F("product__price"))
+        ).get("amount")
+        if not subtotal:
+            subtotal = 0
+        subtotal = float(subtotal)
+        gst_rate = 0.1  # TODO: fetch from config
+        gst_amount = gst_rate * subtotal
+        total = subtotal + gst_amount
+        return Response(
+            {
+                "subtotal": subtotal,
+                "total": total,
+                "gst_rate": gst_rate,
+                "gst_amount": gst_amount,
+                "total_items": total_items,
+            }
+        )
