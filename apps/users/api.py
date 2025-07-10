@@ -5,6 +5,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+
+# from google.auth.transport import requests
+import requests
+from google.oauth2 import id_token
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -79,6 +83,47 @@ class AuthenticationViewSet(viewsets.GenericViewSet):
             # import ipdb; ipdb.set_trace()
             return Response({"detail": error_message}, status=400)
         return Response(serializer.validated_data)
+
+    @action(methods=["post"], detail=False, url_path="google-login")
+    def google_login(self, request):
+        token = request.data.get("token")
+        user_info = request.data.get("userInfo")
+
+        if not token:
+            return Response({"error": "Token missing"}, status=400)
+
+        try:
+            # Verify the token by making a request to Google
+            verification_response = requests.get(
+                f"https://www.googleapis.com/oauth2/v2/userinfo?access_token={token}"
+            )
+
+            if verification_response.status_code != 200:
+                return Response({"error": "Invalid Google token"}, status=400)
+
+            user_data = verification_response.json()
+            email = user_data["email"]
+            name = user_data.get("name", "")
+
+            user, created = User.objects.get_or_create(
+                email=email, defaults={"username": email, "full_name": name}
+            )
+            if created:
+                user.is_active = True
+                user.save()
+
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "access_token": str(refresh.access_token),
+                    "refresh_token": str(refresh),
+                    "email": user.email,
+                    "id": user.id,
+                }
+            )
+        except Exception as e:
+            print(f"Google login error: {e}")  # Add logging
+            return Response({"error": "Invalid Google token"}, status=400)
 
     @action(methods=["post"], detail=False)
     def refresh(self, request):

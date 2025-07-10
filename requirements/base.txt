@@ -12,3 +12,5 @@ boto3==1.35.84
 djangorestframework-simplejwt
 django-tinymce
 django-solo
+google-auth
+google-auth-oauthlib

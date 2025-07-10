@@ -75,3 +75,5 @@ sentry_sdk.init(
     # We recommend adjusting this value in production.
     profiles_sample_rate=1.0,
 )
+
+# GOOGLE_OAUTH_CLIENT_ID = "760791241807-9ud5g2rg9ki1bpnk1evcugis1q7tl8ja.apps.googleusercontent.com"
