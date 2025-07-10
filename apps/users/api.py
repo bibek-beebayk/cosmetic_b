@@ -1,6 +1,10 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -11,6 +15,7 @@ from apps.order.serializers import OrderSerializer
 from apps.users.serializers import (
     ChangePasswordSerializer,
     LoginSerializer,
+    RegistrationSerializer,
     UserSerializer,
 )
 
@@ -22,15 +27,57 @@ class AuthenticationViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = LoginSerializer
 
+    def get_serializer_class(self):
+        if self.action == "register":
+            return RegistrationSerializer
+        return super().get_serializer_class()
+
+    @action(detail=False, methods=["post"])
+    def register(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if User.objects.filter(email=email).exists():
+            return Response({"error": "Email already in use."}, status=400)
+
+        otp = random.randint(100000, 999999)
+        cache.set(f"reg_otp_{email}", otp, timeout=300)
+
+        send_mail(
+            "Your Beauty Corner OTP",
+            f"Your verification code is: {otp}",
+            "beebayk63478@gmail.com",
+            [email],
+        )
+        return Response({"message": "OTP sent to email."}, status=200)
+
+    @action(detail=False, methods=["post"], url_path="confirm-registration")
+    def confirm_registration(self, request):
+        email = request.data.get("email")
+        otp = request.data.get("otp")
+        password = request.data.get("password")
+        full_name = request.data.get("full_name", "")
+
+        cached_otp = cache.get(f"reg_otp_{email}")
+        if str(cached_otp) != str(otp):
+            return Response({"error": "Invalid OTP."}, status=400)
+
+        user = User.objects.create_user(username=email, email=email, password=password)
+        user.first_name = full_name
+        user.is_active = True
+        user.save()
+
+        cache.delete(f"reg_otp_{email}")
+        return Response({"message": "Account created successfully."}, status=201)
+
     @action(methods=["post"], detail=False)
     def login(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # import ipdb; ipdb.set_trace()
-        if serializer.validated_data.get("error"):
-            return Response(
-                {"detail": serializer.validated_data.get("error")}, status=400
-            )
+        if not serializer.is_valid():
+            # Extract the first error message to send in response
+            error_message = next(iter(serializer.errors.values()))[0]
+            # import ipdb; ipdb.set_trace()
+            return Response({"detail": error_message}, status=400)
         return Response(serializer.validated_data)
 
     @action(methods=["post"], detail=False)
@@ -107,7 +154,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             {"message": "Password changed successfully."}, status=status.HTTP_200_OK
         )
-    
+
     @action(detail=False)
     def orders(self, request, *args, **kwargs):
         # import ipdb; ipdb.set_trace()
@@ -115,4 +162,3 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         orders = user.orders.order_by("-created_at")[:20]
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
-        

@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-
 
 User = get_user_model()
 
@@ -36,6 +37,30 @@ class LoginSerializer(serializers.Serializer):
     def create(self, validated_data):
         # This method is not used in this context but is required by the serializer
         return validated_data
+
+
+class RegistrationSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(max_length=32)
+
+    def validate(self, attrs):
+        email = attrs.get("email", None)
+        password = attrs.get("password", None)
+        if not (email and password):
+            raise serializers.ValidationError("Email and password are required.")
+
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError("User with this email already exists.")
+
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            raise serializers.ValidationError(e.messages[0])
+
+        return attrs
+    
+    def create(self, validated_data):
+        pass
 
 
 class UserSerializer(serializers.ModelSerializer):
