@@ -63,7 +63,7 @@ class AuthenticationViewSet(viewsets.GenericViewSet):
             return Response({"error": "Invalid OTP."}, status=400)
 
         user = User.objects.create_user(username=email, email=email, password=password)
-        user.first_name = full_name
+        user.full_name = full_name
         user.is_active = True
         user.save()
 
