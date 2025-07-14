@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     "apps.siteconfig",
     "apps.blog",
     "apps.cart",
-    "apps.order"
+    "apps.order",
+    "apps.service"
 ]
 
 MIDDLEWARE = [
