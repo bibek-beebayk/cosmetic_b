@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from tinymce.models import HTMLField
 
 User = get_user_model()
 
 
 class Service(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = HTMLField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     duration = models.IntegerField()
     image = models.ImageField(upload_to="services/")
@@ -21,7 +22,7 @@ class Staff(models.Model):
 
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, choices=ROLES, default="beautician")
-    bio = models.TextField()
+    bio = HTMLField(blank=True, null=True)
     image = models.ImageField(upload_to="staff/")
     services = models.ManyToManyField(Service, related_name="staff")
 
