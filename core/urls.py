@@ -9,6 +9,7 @@ from apps.product import api as product_api
 from apps.users import api as user_api
 from apps.cart import api as cart_api
 from apps.order import api as order_api
+from apps.service import api as service_api
 
 router = DefaultRouter()
 
@@ -18,6 +19,7 @@ router.register("auth", user_api.AuthenticationViewSet, basename="auth")
 router.register("user", user_api.UserViewSet, basename="user")
 router.register("wishlist", cart_api.WishlistViewSet, basename="wishlist")
 router.register("cart", cart_api.CartViewSet, basename="cart")
+router.register("service", service_api.ServiceViewSet, basename="service")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

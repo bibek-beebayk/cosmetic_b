@@ -4,8 +4,9 @@ from .models import Service, Staff, Appointment
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("name", "price")
+    list_display = ("name", "price", "service_type")
     search_fields = ("name",)
+    list_filter = ("service_type",)
 
 
 @admin.register(Staff)

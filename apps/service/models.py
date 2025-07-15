@@ -6,11 +6,18 @@ User = get_user_model()
 
 
 class Service(models.Model):
+
+    SERVICE_TYPES = [
+        ("beauty", "Beauty"),
+        ("dermatology", "Dermatology"),
+    ]
+
+    service_type = models.CharField(max_length=20, choices=SERVICE_TYPES, default="beauty")
     name = models.CharField(max_length=100)
     description = HTMLField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     duration = models.IntegerField()
-    image = models.ImageField(upload_to="services/")
+    image = models.ImageField(upload_to="services/", max_length=1000)
 
     def __str__(self):
         return self.name
@@ -23,8 +30,8 @@ class Staff(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, choices=ROLES, default="beautician")
     bio = HTMLField(blank=True, null=True)
-    image = models.ImageField(upload_to="staff/")
-    services = models.ManyToManyField(Service, related_name="staff")
+    image = models.ImageField(upload_to="staff/", max_length=1000)
+    services = models.ManyToManyField(Service, related_name="staffs")
 
     def __str__(self):
         return self.name
